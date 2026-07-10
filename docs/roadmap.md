@@ -10,17 +10,19 @@ The roadmap is subject to change as the project evolves.
 The first milestone focuses on establishing the project's architecture and development environment.
 
 ### Goals
-- [ ] Initialize the project structure
-- [ ] Configure the development environment
+
+- [x] Initialize the project structure
+- [x] Configure the development environment
 - [ ] Define the database model
 - [ ] Implement authentication
 - [ ] Build the first application modules
 
 ### Planned Work
-- [ ] Monorepo setup
-- [ ] Docker development environment
-- [ ] PostgreSQL integration
-- [ ] Prisma ORM
+
+- [x] Monorepo setup
+- [x] Docker development environment
+- [x] PostgreSQL integration
+- [-] Prisma ORM
 - [ ] Authentication (JWT)
 - [ ] Authorization (RBAC)
 - [ ] API documentation
@@ -33,6 +35,7 @@ The first milestone focuses on establishing the project's architecture and devel
 The second milestone introduces the core business entities.
 
 ### Modules
+
 - [ ] Companies
 - [ ] Branches
 - [ ] Employees
@@ -48,6 +51,7 @@ The second milestone introduces the core business entities.
 This release focuses on the daily workflow inside a workshop.
 
 ### Modules
+
 - [ ] Work Orders
 - [ ] Work Order Assignments
 - [ ] Work Order Status
@@ -61,6 +65,7 @@ This release focuses on the daily workflow inside a workshop.
 Inventory management becomes part of the platform.
 
 ### Modules
+
 - [ ] Suppliers
 - [ ] Inventory
 - [ ] Stock Movements
@@ -73,6 +78,7 @@ Inventory management becomes part of the platform.
 Introduce reporting capabilities.
 
 ### Modules
+
 - [ ] Operational Reports
 - [ ] Sales Reports
 - [ ] Inventory Reports

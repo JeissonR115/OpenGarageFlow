@@ -15,7 +15,7 @@
     "build": "pnpm --filter api --filter web run build",
     "lint": "pnpm --filter api --filter web run lint",
     "test": "pnpm --filter api run test",
-    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,json,md,yml,yaml}\"",
     "api:dev": "pnpm --filter api run start:dev",
     "api:build": "pnpm --filter api run build",
     "api:lint": "pnpm --filter api run lint",

@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+
+# Package managers
+pnpm-lock.yaml
+
+# Build outputs
+dist
+build
+coverage
+.next
+out
+
+# Cache
+.turbo
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# Generated TypeScript
+*.tsbuildinfo
+
+# Ignore hidden files
+**/.*

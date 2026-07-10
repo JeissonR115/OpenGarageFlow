@@ -12,7 +12,7 @@ Short instructions to help AI agents be productive in this repository.
 
 ## Project Status & Important Notes
 
-🔧 **This project is in early development.** All shared packages (`@open-garage-flow/auth`, `@open-garage-flow/config`, `@open-garage-flow/database`, `@open-garage-flow/shared`, `@open-garage-flow/ui`) are currently **scaffolded but empty**. Prisma schema is not initialized, and no database migrations exist yet. Do not assume implementations exist in these packages — verify before using.
+🔧 **This project is in early development.** All shared packages (`@open-garage-flow/auth`, `@open-garage-flow/config`, `@open-garage-flow/database`, `@open-garage-flow/shared`, `@open-garage-flow/ui`) are currently **scaffolded but empty**. Prisma is initialized with a basic schema, but no database models have been defined yet. Do not assume implementations exist in these packages — verify before using.
 
 ## Repository overview
 
@@ -24,22 +24,28 @@ Short instructions to help AI agents be productive in this repository.
 
 ## Getting Started (Local Development)
 
-1. **Prerequisites**: Node 24+ and pnpm 11.11.0+.
+1. **Prerequisites**: Node 24+ and pnpm 11.11.0+ (or Node 22.13+ with compatible pnpm version).
 2. **Install dependencies**: `pnpm install` (from workspace root).
-3. **Start PostgreSQL**: `docker-compose -f docker/compose.yml up -d`.
-4. **Initialize database** (when Prisma schema is ready): `cd apps/api && pnpm exec prisma migrate dev`.
-5. **Run both services**:
+3. **Generate Prisma client**: `cd apps/api && pnpm prisma:generate`.
+4. **Start PostgreSQL**: `docker-compose -f docker/compose.yml up -d`.
+5. **Configure database** in `apps/api/.env`:
+   - Set `DATABASE_URL` (example: `postgresql://admin:admin@localhost:5433/opengarageflow`)
+   - See `apps/api/.env.example` for reference.
+6. **Run both services**:
    - `pnpm dev` (all services in parallel)
    - Or individual services: `pnpm api:dev` (backend at http://localhost:3001) and `pnpm web:dev` (frontend at http://localhost:3000)
-6. **Backend API docs**: http://localhost:3001/api (Swagger auto-configured via `@nestjs/swagger`)
+7. **Backend API docs**: http://localhost:3001/api (Swagger auto-configured via `@nestjs/swagger`)
 
 ## Database & Prisma Setup
 
-- **Status**: Not yet initialized. Prisma schema should be created at `packages/database/schema.prisma` (plan only—not yet implemented).
+- **Status**: ✅ Prisma initialized at `apps/api/prisma/schema.prisma` with PostgreSQL datasource.
 - **Database**: PostgreSQL 17 configured in `docker/compose.yml`.
-- **Environment**: Docker `.env` variables are defined in `docker/compose.yml` (POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_PORT).
-- **Migrations**: When ready, place SQL init scripts in `docker/postgres/init/` for non-Prisma migrations, or use Prisma migrations in `apps/api`.
-- **Backend integration**: Once Prisma schema exists, import models from `@open-garage-flow/database` in backend services.
+- **Environment**: Database connection via `DATABASE_URL` in `apps/api/.env` (e.g., `postgresql://admin:admin@localhost:5433/opengarageflow`).
+- **PrismaService**: Located at `apps/api/src/common/prisma/prisma.service.ts`. Extends PrismaClient with lifecycle hooks (OnModuleInit/OnModuleDestroy).
+- **PrismaModule**: Located at `apps/api/src/common/prisma/prisma.module.ts`. Exports PrismaService for dependency injection across features.
+- **Scripts**: `pnpm prisma:generate`, `pnpm prisma:format`, `pnpm prisma:validate`, `pnpm prisma:studio` (run from `apps/api/`).
+- **Migrations**: Use Prisma migrations in `apps/api` via `prisma migrate dev`. SQL init scripts can be placed in `docker/postgres/init/` if needed.
+- **Backend integration**: Import PrismaService in NestJS modules via PrismaModule. Example: add PrismaModule to imports, inject PrismaService into services.
 
 ## TypeScript & Path Configuration
 
@@ -142,14 +148,13 @@ pnpm web:lint             # Lint frontend code
 ### Common Pitfalls & Gotchas
 
 1. **Shared packages are scaffolded but empty** — Always check if code exists before referencing it.
-2. **No Prisma schema yet** — Database models need to be defined and migrations created before backend features depend on them.
-3. **Backend bootstrap only** — Only `app.*.ts` files exist. New feature modules must follow NestJS folder conventions.
-4. **Frontend is template** — `page.tsx` still has create-next-app placeholder. Replace with actual dashboard.
-5. **Path aliases not fully configured** — `tsconfig.base.json#paths` is empty. Update as new packages are implemented.
-6. **Environment setup required** — Must run Docker for PostgreSQL before backend can connect to database.
-7. **JWT config exists but no auth module** — Environment variables (`JWT_SECRET`, `JWT_EXPIRES_IN`) are defined but `packages/auth` is not yet implemented.
-8. **No CI/CD defined** — GitHub Actions workflows are not yet configured. Plan deployment strategy before release.
-9. **Multi-tenant shared DB assumption** — Architecture assumes single PostgreSQL database with tenant isolation via schema/rows. Confirm this approach before adding tenancy logic.
+2. **Backend bootstrap only** — Only `app.*.ts` files exist. New feature modules must follow NestJS folder conventions.
+3. **Frontend is template** — `page.tsx` still has create-next-app placeholder. Replace with actual dashboard.
+4. **Path aliases not fully configured** — `tsconfig.base.json#paths` is empty. Update as new packages are implemented.
+5. **Environment setup required** — Must run Docker for PostgreSQL and generate Prisma client before backend can connect to database.
+6. **JWT config exists but no auth module** — Environment variables (`JWT_SECRET`, `JWT_EXPIRES_IN`) are defined but `packages/auth` is not yet implemented.
+7. **No CI/CD defined** — GitHub Actions workflows are not yet configured. Plan deployment strategy before release.
+8. **Multi-tenant shared DB assumption** — Architecture assumes single PostgreSQL database with tenant isolation via schema/rows. Confirm this approach before adding tenancy logic.
 
 ## Recommended Agent Behavior
 

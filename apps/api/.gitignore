@@ -1,0 +1,5 @@
+# API-specific ignores only.
+/dist
+/coverage
+
+/src/generated/prisma

@@ -10,12 +10,12 @@ The project aims to provide a modern, self-hostable, and SaaS-ready solution for
 
 The initial release will focus on:
 
-* Authentication
-* Customer Management
-* Vehicle Management
-* Work Orders
-* Inventory
-* Dashboard
+- Authentication
+- Customer Management
+- Vehicle Management
+- Work Orders
+- Inventory
+- Dashboard
 
 Additional modules will be introduced in future releases.
 

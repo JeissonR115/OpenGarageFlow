@@ -1,0 +1,7 @@
+# Web app specific ignores.
+/.next/
+/out/
+/build/
+/coverage/
+*.tsbuildinfo
+next-env.d.ts

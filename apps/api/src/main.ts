@@ -1,29 +1,57 @@
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as dotenv from 'dotenv';
+
 import { AppModule } from './app.module';
 
-dotenv.config();
+async function bootstrap(): Promise<void> {
+  const logger = new Logger('Bootstrap');
 
-async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('OpenGarageFlow API')
-    .setDescription('API for garage/workshop management platform')
-    .setVersion('0.1.0')
-    .build();
+  const configService = app.get(ConfigService);
 
-  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, swaggerDocument);
+  app.setGlobalPrefix('api');
 
-  const host = process.env.HOST ?? '0.0.0.0';
-  const port = Number(process.env.PORT ?? 3001);
+  app.enableCors({
+    origin: configService.getOrThrow<string>('app.corsOrigin'),
+  });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+
+  const swaggerEnabled = configService.getOrThrow<boolean>('swagger.enabled');
+
+  if (swaggerEnabled) {
+    const document = SwaggerModule.createDocument(
+      app,
+      new DocumentBuilder()
+        .setTitle(configService.getOrThrow<string>('app.name'))
+        .setDescription('API for garage/workshop management platform')
+        .setVersion(configService.getOrThrow<string>('app.version'))
+        .build(),
+    );
+
+    SwaggerModule.setup('api/docs', app, document);
+  }
+
+  const host = configService.getOrThrow<string>('app.host');
+  const port = configService.getOrThrow<number>('app.port');
 
   await app.listen(port, host);
 
-  console.log('OpenGarageFlow API is running');
-  console.log(`http://${host}:${port}`);
-  console.log('Swagger: /api');
+  logger.log(`🚀 ${configService.getOrThrow<string>('app.name')} started`);
+  logger.log(`🌐 http://${host}:${port}`);
+
+  if (swaggerEnabled) {
+    logger.log(`📚 http://${host}:${port}/api/docs`);
+  }
 }
+
 void bootstrap();

@@ -9,8 +9,8 @@ import { appConfig, databaseConfig, jwtConfig, swaggerConfig } from './';
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
-
-      envFilePath: [`.env.${process.env.NODE_ENV ?? 'development'}`, '.env'],
+      expandVariables: true,
+      envFilePath: [`.env.${process.env.NODE_ENV ?? 'development'}`, '.env.local', '.env'],
       load: [appConfig, databaseConfig, jwtConfig, swaggerConfig],
       validationOptions: {
         abortEarly: false,

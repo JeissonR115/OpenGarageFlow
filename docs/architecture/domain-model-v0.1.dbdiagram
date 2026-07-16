@@ -1,0 +1,244 @@
+{
+  "version": "2.0.0",
+  "darkMode": true,
+  "gridEnabling": true,
+  "currentViewName": null,
+  "defaultView": {
+    "detailLevel": "All",
+    "tablePositions": [
+      {
+        "name": "Company",
+        "schemaName": "public",
+        "x": 159.8031195498513,
+        "y": 14.956062390996976
+      },
+      {
+        "name": "Branch",
+        "schemaName": "public",
+        "x": 499.9910128097086,
+        "y": -17.043937609003024
+      },
+      {
+        "name": "Employee",
+        "schemaName": "public",
+        "x": 901.6281010665183,
+        "y": -322.540769895664
+      },
+      {
+        "name": "Customer",
+        "schemaName": "public",
+        "x": 310.56230149069955,
+        "y": 369.13181282700907
+      },
+      {
+        "name": "VehicleBrand",
+        "schemaName": "public",
+        "x": 840.9526206988121,
+        "y": 506
+      },
+      {
+        "name": "VehicleModel",
+        "schemaName": "public",
+        "x": 557.54513745763,
+        "y": 444.0506001601766
+      },
+      {
+        "name": "Vehicle",
+        "schemaName": "public",
+        "x": 1119.756159570174,
+        "y": 348.05060016017654
+      },
+      {
+        "name": "WorkOrder",
+        "schemaName": "public",
+        "x": 1124.4479796915934,
+        "y": -49.42021937545917
+      }
+    ],
+    "tableGroupCollapseStates": [],
+    "stickyNoteLayouts": [],
+    "referencePaths": [
+      {
+        "firstFieldNames": [
+          "user_id"
+        ],
+        "firstTableName": "posts",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "users",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id"
+        ],
+        "firstTableName": "users",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "following_user_id"
+        ],
+        "secondTableName": "follows",
+        "secondSchemaName": "public",
+        "secondRelation": "*",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id"
+        ],
+        "firstTableName": "users",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "followed_user_id"
+        ],
+        "secondTableName": "follows",
+        "secondSchemaName": "public",
+        "secondRelation": "*",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "company_id"
+        ],
+        "firstTableName": "Branch",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Company",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "branch_id"
+        ],
+        "firstTableName": "Employee",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Branch",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "customer_id"
+        ],
+        "firstTableName": "Vehicle",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Customer",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "brand_id"
+        ],
+        "firstTableName": "Vehicle",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "VehicleBrand",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "model_id"
+        ],
+        "firstTableName": "Vehicle",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "VehicleModel",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "brand_id"
+        ],
+        "firstTableName": "VehicleModel",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "VehicleBrand",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "branch_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Branch",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "customer_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Customer",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "vehicle_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Vehicle",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      }
+    ]
+  },
+  "views": {}
+}

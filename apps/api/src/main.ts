@@ -4,19 +4,24 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import { AppConfig } from './config/app.config';
 
 async function bootstrap(): Promise<void> {
-  const logger = new Logger('Bootstrap');
+  const logger = new Logger(bootstrap.name);
 
   const app = await NestFactory.create(AppModule);
 
-  const configService = app.get(ConfigService);
+  app.enableShutdownHooks();
 
-  app.setGlobalPrefix('api');
+  const config = app.get(ConfigService);
 
-  app.enableCors({
-    origin: configService.getOrThrow<string>('app.corsOrigin'),
-  });
+  const appConfig = config.getOrThrow<AppConfig>('app');
+  const swaggerEnabled = config.getOrThrow<boolean>('swagger.enabled');
+
+  const { name, version, host, port, globalPrefix, docsPath, corsOrigin } = appConfig;
+
+  app.setGlobalPrefix(globalPrefix);
+  app.enableCors({ origin: corsOrigin });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -26,31 +31,29 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  const swaggerEnabled = configService.getOrThrow<boolean>('swagger.enabled');
-
   if (swaggerEnabled) {
     const document = SwaggerModule.createDocument(
       app,
       new DocumentBuilder()
-        .setTitle(configService.getOrThrow<string>('app.name'))
+        .setTitle(name)
         .setDescription('API for garage/workshop management platform')
-        .setVersion(configService.getOrThrow<string>('app.version'))
+        .setVersion(version)
         .build(),
     );
 
-    SwaggerModule.setup('api/docs', app, document);
+    SwaggerModule.setup(`${globalPrefix}/${docsPath}`, app, document);
   }
-
-  const host = configService.getOrThrow<string>('app.host');
-  const port = configService.getOrThrow<number>('app.port');
 
   await app.listen(port, host);
 
-  logger.log(`🚀 ${configService.getOrThrow<string>('app.name')} started`);
-  logger.log(`🌐 http://${host}:${port}`);
+  const serverUrl = `http://${host}:${port}`;
+
+  logger.log(`${name} v${version} started successfully`);
+  logger.log(`Application: ${serverUrl}`);
+  logger.log(`API: ${serverUrl}/${globalPrefix}`);
 
   if (swaggerEnabled) {
-    logger.log(`📚 http://${host}:${port}/api/docs`);
+    logger.log(`Documentation: ${serverUrl}/${globalPrefix}/${docsPath}`);
   }
 }
 

@@ -1,0 +1,511 @@
+{
+  "version": "2.0.0",
+  "darkMode": true,
+  "gridEnabling": true,
+  "currentViewName": null,
+  "defaultView": {
+    "detailLevel": "All",
+    "tablePositions": [
+      {
+        "name": "Company",
+        "schemaName": "public",
+        "x": 816,
+        "y": -64
+      },
+      {
+        "name": "Branch",
+        "schemaName": "public",
+        "x": 1008,
+        "y": -632
+      },
+      {
+        "name": "Employee",
+        "schemaName": "public",
+        "x": 736,
+        "y": -736
+      },
+      {
+        "name": "User",
+        "schemaName": "public",
+        "x": 424,
+        "y": -768
+      },
+      {
+        "name": "Role",
+        "schemaName": "public",
+        "x": -24,
+        "y": -737.6198664888027
+      },
+      {
+        "name": "UserRole",
+        "schemaName": "public",
+        "x": 216,
+        "y": -768
+      },
+      {
+        "name": "Customer",
+        "schemaName": "public",
+        "x": 2009.791950198155,
+        "y": -102.25354019928102
+      },
+      {
+        "name": "VehicleBrand",
+        "schemaName": "public",
+        "x": 2008.6787825501024,
+        "y": 169.74645980071898
+      },
+      {
+        "name": "VehicleModel",
+        "schemaName": "public",
+        "x": 2010.9202751962812,
+        "y": 329.746459800719
+      },
+      {
+        "name": "Vehicle",
+        "schemaName": "public",
+        "x": 1712,
+        "y": -134.25354019928102
+      },
+      {
+        "name": "WorkOrderType",
+        "schemaName": "public",
+        "x": 1712,
+        "y": -480
+      },
+      {
+        "name": "WorkOrderStatus",
+        "schemaName": "public",
+        "x": 1707.5398407487714,
+        "y": -336
+      },
+      {
+        "name": "WorkOrder",
+        "schemaName": "public",
+        "x": 1312,
+        "y": -935.8236736249575
+      },
+      {
+        "name": "WorkOrderEmployee",
+        "schemaName": "public",
+        "x": 992,
+        "y": -935.8236736249576
+      },
+      {
+        "name": "Service",
+        "schemaName": "public",
+        "x": 2232,
+        "y": -584
+      },
+      {
+        "name": "WorkOrderService",
+        "schemaName": "public",
+        "x": 1941.0226335296106,
+        "y": -648
+      },
+      {
+        "name": "Product",
+        "schemaName": "public",
+        "x": 2240,
+        "y": -1103.8453719646573
+      },
+      {
+        "name": "WorkOrderItem",
+        "schemaName": "public",
+        "x": 1944,
+        "y": -1168
+      },
+      {
+        "name": "Warranty",
+        "schemaName": "public",
+        "x": 1943.5566954931335,
+        "y": -1488
+      },
+      {
+        "name": "WorkOrderPhotoType",
+        "schemaName": "public",
+        "x": 2224,
+        "y": -864
+      },
+      {
+        "name": "WorkOrderPhoto",
+        "schemaName": "public",
+        "x": 1942.6879252972321,
+        "y": -928
+      }
+    ],
+    "tableGroupCollapseStates": [],
+    "stickyNoteLayouts": [],
+    "referencePaths": [
+      {
+        "firstFieldNames": [
+          "company_id"
+        ],
+        "firstTableName": "Branch",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Company",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "branch_id"
+        ],
+        "firstTableName": "Employee",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Branch",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "employee_id"
+        ],
+        "firstTableName": "User",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Employee",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "user_id"
+        ],
+        "firstTableName": "UserRole",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "User",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "role_id"
+        ],
+        "firstTableName": "UserRole",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Role",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "customer_id"
+        ],
+        "firstTableName": "Vehicle",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Customer",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "brand_id"
+        ],
+        "firstTableName": "Vehicle",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "VehicleBrand",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "model_id"
+        ],
+        "firstTableName": "Vehicle",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "VehicleModel",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "brand_id"
+        ],
+        "firstTableName": "VehicleModel",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "VehicleBrand",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "branch_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Branch",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "vehicle_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Vehicle",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "type_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrderType",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "status_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrderStatus",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "received_by_employee_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Employee",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "work_order_id"
+        ],
+        "firstTableName": "WorkOrderEmployee",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrder",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "employee_id"
+        ],
+        "firstTableName": "WorkOrderEmployee",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Employee",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "work_order_id"
+        ],
+        "firstTableName": "WorkOrderService",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrder",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "service_id"
+        ],
+        "firstTableName": "WorkOrderService",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Service",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "work_order_id"
+        ],
+        "firstTableName": "WorkOrderItem",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrder",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "product_id"
+        ],
+        "firstTableName": "WorkOrderItem",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Product",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "original_work_order_id"
+        ],
+        "firstTableName": "Warranty",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrder",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": [
+          {
+            "x": 1765.402084691253,
+            "y": -1408
+          },
+          {
+            "x": 1765.402084691253,
+            "y": -887.8236736249576
+          }
+        ]
+      },
+      {
+        "firstFieldNames": [
+          "work_order_id"
+        ],
+        "firstTableName": "WorkOrderPhoto",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrder",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "photo_type_id"
+        ],
+        "firstTableName": "WorkOrderPhoto",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrderPhotoType",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "service_id"
+        ],
+        "firstTableName": "WorkOrderPhoto",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "WorkOrderService",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      }
+    ]
+  },
+  "views": {}
+}

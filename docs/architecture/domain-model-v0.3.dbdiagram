@@ -131,6 +131,12 @@
         "schemaName": "public",
         "x": 1942.6879252972321,
         "y": -928
+      },
+      {
+        "name": "WorkOrderEmployeeRole",
+        "schemaName": "public",
+        "x": 696,
+        "y": -872
       }
     ],
     "tableGroupCollapseStates": [],
@@ -501,6 +507,21 @@
           "id"
         ],
         "secondTableName": "WorkOrderService",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "warranty_id"
+        ],
+        "firstTableName": "WorkOrder",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id"
+        ],
+        "secondTableName": "Warranty",
         "secondSchemaName": "public",
         "secondRelation": "1",
         "checkPoints": []

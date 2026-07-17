@@ -1,0 +1,23 @@
+model Warranty {
+  id String @id @default(uuid()) @db.Uuid
+
+  originalWorkOrderId String @map("original_work_order_id") @db.Uuid
+
+  originalWorkOrder WorkOrder @relation("OriginalWorkOrder", fields: [originalWorkOrderId], references: [id])
+
+  workOrders WorkOrder[] @relation("WarrantyWorkOrders")
+
+  title String
+
+  description String?
+
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
+
+  active Boolean @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([originalWorkOrderId])
+  @@map("warranties")
+}

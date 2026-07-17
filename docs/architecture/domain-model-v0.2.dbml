@@ -1,0 +1,279 @@
+// ============================================================
+// OpenGarageFlow
+// Domain Model v0.2
+// ============================================================
+
+Table Company {
+  id uuid [pk]
+
+  name varchar
+  legal_name varchar
+  tax_id varchar
+
+  phone varchar
+  email varchar
+  website varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Branch {
+  id uuid [pk]
+
+  company_id uuid [not null]
+
+  name varchar
+
+  phone varchar
+  email varchar
+
+  address varchar
+  city varchar
+  state varchar
+  country varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Employee {
+  id uuid [pk]
+
+  branch_id uuid [not null]
+
+  first_name varchar
+  last_name varchar
+
+  email varchar
+  phone varchar
+
+  active boolean
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table User {
+  id uuid [pk]
+
+  employee_id uuid [not null]
+
+  username varchar
+  password_hash varchar
+
+  active boolean
+
+  last_login timestamp
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Role {
+  id uuid [pk]
+
+  name varchar
+  description text
+
+  created_at timestamp
+}
+
+Table UserRole {
+  user_id uuid
+  role_id uuid
+}
+
+Table Customer {
+  id uuid [pk]
+
+  first_name varchar
+  last_name varchar
+
+  email varchar
+  phone varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table VehicleBrand {
+  id uuid [pk]
+
+  name varchar
+
+  created_at timestamp
+}
+
+Table VehicleModel {
+  id uuid [pk]
+
+  brand_id uuid [not null]
+
+  name varchar
+
+  created_at timestamp
+}
+
+Table Vehicle {
+  id uuid [pk]
+
+  customer_id uuid [not null]
+
+  brand_id uuid [not null]
+  model_id uuid [not null]
+
+  plate varchar
+  vin varchar
+
+  year int
+
+  color varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table WorkOrderStatus {
+  id int [pk]
+
+  name varchar
+  description text
+}
+
+Table WorkOrder {
+  id uuid [pk]
+
+  branch_id uuid [not null]
+  vehicle_id uuid [not null]
+
+  status_id int [not null]
+
+  order_number varchar
+
+  received_at timestamp
+  completed_at timestamp
+
+  observations text
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Service {
+  id uuid [pk]
+
+  name varchar
+
+  description text
+
+  estimated_duration int
+
+  base_price decimal
+
+  active boolean
+}
+
+Table WorkOrderService {
+  id uuid [pk]
+
+  work_order_id uuid [not null]
+
+  service_id uuid [not null]
+
+  employee_id uuid
+
+  quantity decimal
+
+  unit_price decimal
+
+  subtotal decimal
+
+  notes text
+}
+
+Table Product {
+  id uuid [pk]
+
+  name varchar
+
+  sku varchar
+
+  active boolean
+}
+
+Table WorkOrderItem {
+  id uuid [pk]
+
+  work_order_id uuid [not null]
+
+  product_id uuid [not null]
+
+  quantity decimal
+
+  unit_price decimal
+
+  subtotal decimal
+}
+
+Table Warranty {
+  id uuid [pk]
+
+  work_order_id uuid [not null]
+
+  description text
+
+  start_date date
+  end_date date
+
+  active boolean
+}
+
+Table WorkOrderPhoto {
+  id uuid [pk]
+
+  work_order_id uuid [not null]
+
+  url varchar
+
+  type varchar
+
+  description text
+
+  created_at timestamp
+}
+
+// ============================================================
+// Relationships
+// ============================================================
+
+Ref: Branch.company_id > Company.id
+
+Ref: Employee.branch_id > Branch.id
+
+Ref: User.employee_id > Employee.id
+
+Ref: UserRole.user_id > User.id
+Ref: UserRole.role_id > Role.id
+
+Ref: Vehicle.customer_id > Customer.id
+
+Ref: Vehicle.brand_id > VehicleBrand.id
+Ref: Vehicle.model_id > VehicleModel.id
+
+Ref: VehicleModel.brand_id > VehicleBrand.id
+
+Ref: WorkOrder.branch_id > Branch.id
+Ref: WorkOrder.vehicle_id > Vehicle.id
+Ref: WorkOrder.status_id > WorkOrderStatus.id
+
+Ref: WorkOrderService.work_order_id > WorkOrder.id
+Ref: WorkOrderService.service_id > Service.id
+Ref: WorkOrderService.employee_id > Employee.id
+
+Ref: WorkOrderItem.work_order_id > WorkOrder.id
+Ref: WorkOrderItem.product_id > Product.id
+
+Ref: Warranty.work_order_id > WorkOrder.id
+
+Ref: WorkOrderPhoto.work_order_id > WorkOrder.id

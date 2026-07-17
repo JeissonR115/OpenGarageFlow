@@ -1,0 +1,81 @@
+// ======================================================
+// CATALOGS
+// ======================================================
+
+model Service {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  description String?
+
+  estimatedDuration Int? @map("estimated_duration")
+
+  basePrice Decimal @map("base_price") @db.Decimal(10, 2)
+
+  active Boolean @default(true)
+
+  workOrderServices WorkOrderService[]
+
+  @@map("services")
+}
+
+model Product {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  sku String @unique
+
+  active Boolean @default(true)
+
+  workOrderItems WorkOrderItem[]
+
+  @@map("products")
+}
+
+model WorkOrderType {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  description String?
+
+  workOrders WorkOrder[]
+
+  @@map("work_order_types")
+}
+
+model WorkOrderStatus {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  description String?
+
+  workOrders WorkOrder[]
+
+  @@map("work_order_statuses")
+}
+
+model WorkOrderPhotoType {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  photos WorkOrderPhoto[]
+
+  @@map("work_order_photo_types")
+}
+
+model WorkOrderEmployeeRole {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String
+
+  description String?
+
+  employees WorkOrderEmployee[]
+
+  @@map("work_order_employee_roles")
+}

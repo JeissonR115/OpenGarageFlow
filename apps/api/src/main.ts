@@ -1,4 +1,4 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, RequestMethod, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -18,9 +18,16 @@ async function bootstrap(): Promise<void> {
   const appConfig = config.getOrThrow<AppConfig>('app');
   const swaggerEnabled = config.getOrThrow<boolean>('swagger.enabled');
 
-  const { name, version, host, port, globalPrefix, docsPath, corsOrigin } = appConfig;
+  const { name, version, host, port, globalPrefix, docsPath, corsOrigin, apiVersion } = appConfig;
 
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(globalPrefix, {
+    exclude: [{ path: '/', method: RequestMethod.GET }],
+  });
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: String(apiVersion),
+  });
+
   app.enableCors({ origin: corsOrigin });
 
   app.useGlobalPipes(
@@ -50,8 +57,7 @@ async function bootstrap(): Promise<void> {
 
   logger.log(`${name} v${version} started successfully`);
   logger.log(`Application: ${serverUrl}`);
-  logger.log(`API: ${serverUrl}/${globalPrefix}`);
-
+  logger.log(`API: ${serverUrl}/${globalPrefix}/v${apiVersion}`);
   if (swaggerEnabled) {
     logger.log(`Documentation: ${serverUrl}/${globalPrefix}/${docsPath}`);
   }

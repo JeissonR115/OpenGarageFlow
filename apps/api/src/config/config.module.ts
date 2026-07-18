@@ -20,6 +20,7 @@ import { appConfig, databaseConfig, jwtConfig, swaggerConfig } from './';
 
         APP_NAME: Joi.string().required(),
         APP_VERSION: Joi.string().required(),
+        API_VERSION: Joi.string().default('1'),
 
         HOST: Joi.string().default('0.0.0.0'),
 

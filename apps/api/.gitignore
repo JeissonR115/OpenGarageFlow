@@ -2,4 +2,4 @@
 /dist
 /coverage
 
-/src/prisma/generated
+/prisma/generated

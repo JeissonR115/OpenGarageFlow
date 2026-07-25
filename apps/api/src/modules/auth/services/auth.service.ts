@@ -1,18 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { AuthRepository } from '../repositories/auth.repository';
+import { PasswordService } from './password.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly passwordService: PasswordService,
+  ) {}
 
-  async validateUser(identifier: string, _password: string) {
+  async validateUser(identifier: string, password: string) {
     const user = await this.authRepository.findByIdentifier(identifier);
 
     if (!user) {
-      throw new NotFoundException('User was not found.');
+      throw new UnauthorizedException('Invalid credentials.');
     }
-    console.log('password', _password);
+
+    const passwordMatches = await this.passwordService.verify(user.passwordHash, password);
+
+    if (!passwordMatches) {
+      throw new UnauthorizedException('Invalid credentials.');
+    }
 
     return {
       id: user.id,

@@ -14,6 +14,7 @@ export class AuthRepository {
       select: {
         id: true,
         username: true,
+        passwordHash: true,
         employee: {
           select: {
             id: true,

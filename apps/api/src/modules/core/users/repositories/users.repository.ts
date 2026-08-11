@@ -1,0 +1,254 @@
+import { Injectable } from '@nestjs/common';
+
+import { PrismaService } from '../../../../prisma/prisma.service';
+
+@Injectable()
+export class UsersRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        active: true,
+        lastLogin: true,
+        employee: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            active: true,
+          },
+        },
+        roles: {
+          select: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async findById(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        active: true,
+        lastLogin: true,
+        employee: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            active: true,
+          },
+        },
+        roles: {
+          select: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async findByIdWithPassword(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        passwordHash: true,
+        employeeId: true,
+        active: true,
+      },
+    });
+  }
+
+  async findByUsername(username: string) {
+    return this.prisma.user.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+      },
+    });
+  }
+
+  async findByEmployeeId(employeeId: string) {
+    return this.prisma.user.findFirst({
+      where: { employeeId },
+      select: {
+        id: true,
+        employeeId: true,
+      },
+    });
+  }
+
+  async findEmployeeById(employeeId: string) {
+    return this.prisma.employee.findUnique({
+      where: { id: employeeId },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  async findRolesByIds(roleIds: string[]) {
+    return this.prisma.role.findMany({
+      where: {
+        id: { in: roleIds },
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  async createUser(
+    data: {
+      username: string;
+      passwordHash: string;
+      employeeId: string;
+      active: boolean;
+      lastLogin: Date | null;
+    },
+    roleIds: string[],
+  ) {
+    const createdUser = await this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          username: data.username,
+          passwordHash: data.passwordHash,
+          employeeId: data.employeeId,
+          active: data.active,
+          lastLogin: data.lastLogin,
+        },
+      });
+
+      await tx.userRole.createMany({
+        data: roleIds.map((roleId) => ({
+          userId: user.id,
+          roleId,
+        })),
+      });
+
+      return tx.user.findUnique({
+        where: { id: user.id },
+        select: {
+          id: true,
+          username: true,
+          active: true,
+          lastLogin: true,
+          employee: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              phone: true,
+              active: true,
+            },
+          },
+          roles: {
+            select: {
+              role: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    });
+
+    return createdUser;
+  }
+
+  async updateUser(
+    id: string,
+    data: { username?: string; passwordHash?: string; employeeId?: string; active?: boolean },
+    roleIds?: string[],
+  ) {
+    if (roleIds) {
+      await this.prisma.$transaction([
+        this.prisma.user.update({
+          where: { id },
+          data,
+        }),
+        this.prisma.userRole.deleteMany({
+          where: { userId: id },
+        }),
+        this.prisma.userRole.createMany({
+          data: roleIds.map((roleId) => ({
+            userId: id,
+            roleId,
+          })),
+        }),
+      ]);
+    } else {
+      await this.prisma.user.update({
+        where: { id },
+        data,
+      });
+    }
+
+    return this.findById(id);
+  }
+
+  async deactivateUser(id: string) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { active: false },
+      select: {
+        id: true,
+        username: true,
+        active: true,
+        lastLogin: true,
+        employee: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            active: true,
+          },
+        },
+        roles: {
+          select: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+}

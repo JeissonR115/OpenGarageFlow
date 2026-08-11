@@ -1,7 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 import { LoginDto } from '../dto/login.dto';
+import { LoginResponseDto } from '../dto/login-response.dto';
 import { AuthService } from '../services/auth.service';
 
 @ApiTags('Auth')
@@ -11,8 +12,8 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Validate a user by username or email' })
-  @ApiOkResponse({ description: 'User validated successfully.' })
-  @ApiNotFoundResponse({ description: 'User was not found.' })
+  @ApiOkResponse({ description: 'User validated successfully.', type: LoginResponseDto })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })
   async login(@Body() loginDto: LoginDto) {
     return this.authService.validateUser(loginDto.identifier, loginDto.password);
   }

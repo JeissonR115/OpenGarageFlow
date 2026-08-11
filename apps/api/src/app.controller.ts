@@ -1,6 +1,7 @@
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { ApiInfoResponseDto } from './dto/api-info-response.dto';
 import { AppService } from './app.service';
 
 @ApiTags('API')
@@ -10,7 +11,10 @@ export class AppController {
 
   @Get()
   @ApiOperation({ summary: 'Get API information' })
-  @ApiOkResponse({ description: 'API information retrieved successfully.' })
+  @ApiOkResponse({
+    description: 'API information retrieved successfully.',
+    type: ApiInfoResponseDto,
+  })
   getApiDescription() {
     return this.appService.getApiDescription();
   }

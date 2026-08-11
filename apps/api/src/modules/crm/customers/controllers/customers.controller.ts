@@ -1,6 +1,13 @@
 import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiNotFoundResponse,
+  ApiNotImplementedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
+import { CustomerResponseDto } from '../dto/customer-response.dto';
 import { CustomersService } from '../services/customers.service';
 
 @ApiTags('Customers')
@@ -10,14 +17,18 @@ export class CustomersController {
 
   @Get()
   @ApiOperation({ summary: 'List customers' })
-  @ApiOkResponse({ description: 'Customers retrieved successfully.' })
+  @ApiOkResponse({
+    description: 'Customers retrieved successfully.',
+    type: CustomerResponseDto,
+    isArray: true,
+  })
   async findAll() {
     return this.customersService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a customer by ID' })
-  @ApiOkResponse({ description: 'Customer retrieved successfully.' })
+  @ApiOkResponse({ description: 'Customer retrieved successfully.', type: CustomerResponseDto })
   @ApiNotFoundResponse({ description: 'Customer was not found.' })
   async findById(@Param('id') id: string) {
     return this.customersService.findById(id);
@@ -25,14 +36,14 @@ export class CustomersController {
 
   @Post()
   @ApiOperation({ summary: 'Create a customer (template)' })
-  @ApiOkResponse({ description: 'Customer creation template.' })
+  @ApiNotImplementedResponse({ description: 'Customer creation is not implemented yet.' })
   create(): never {
     return this.customersService.create();
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a customer (template)' })
-  @ApiOkResponse({ description: 'Customer update template.' })
+  @ApiNotImplementedResponse({ description: 'Customer update is not implemented yet.' })
   @ApiNotFoundResponse({ description: 'Customer was not found.' })
   update(): never {
     return this.customersService.update();
@@ -40,7 +51,7 @@ export class CustomersController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a customer (template)' })
-  @ApiOkResponse({ description: 'Customer deletion template.' })
+  @ApiNotImplementedResponse({ description: 'Customer deletion is not implemented yet.' })
   @ApiNotFoundResponse({ description: 'Customer was not found.' })
   remove(): never {
     return this.customersService.remove();

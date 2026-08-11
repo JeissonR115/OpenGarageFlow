@@ -53,10 +53,7 @@ export class UsersController {
   @ApiBadRequestResponse({ description: 'Invalid request data.' })
   @ApiConflictResponse({ description: 'Username, employee or role validation failed.' })
   @ApiNotFoundResponse({ description: 'User was not found.' })
-  async update(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 

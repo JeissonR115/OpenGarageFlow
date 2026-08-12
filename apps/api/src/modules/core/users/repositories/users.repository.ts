@@ -7,7 +7,8 @@ export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.user.findMany({
+    const users = await this.prisma.user.findMany({
+      where: { active: true },
       select: {
         id: true,
         username: true,
@@ -36,10 +37,12 @@ export class UsersRepository {
         },
       },
     });
+
+    return users.map((user) => ({ ...user, roles: user.roles.map(({ role }) => role) }));
   }
 
   async findById(id: string) {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
         id: true,
@@ -69,6 +72,8 @@ export class UsersRepository {
         },
       },
     });
+
+    return user ? { ...user, roles: user.roles.map(({ role }) => role) } : null;
   }
 
   async findByIdWithPassword(id: string) {
@@ -184,7 +189,9 @@ export class UsersRepository {
       });
     });
 
-    return createdUser;
+    return createdUser
+      ? { ...createdUser, roles: createdUser.roles.map(({ role }) => role) }
+      : null;
   }
 
   async updateUser(
@@ -219,7 +226,7 @@ export class UsersRepository {
   }
 
   async deactivateUser(id: string) {
-    return this.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: { id },
       data: { active: false },
       select: {
@@ -250,5 +257,7 @@ export class UsersRepository {
         },
       },
     });
+
+    return { ...user, roles: user.roles.map(({ role }) => role) };
   }
 }

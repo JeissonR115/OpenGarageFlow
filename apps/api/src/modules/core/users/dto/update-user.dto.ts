@@ -1,5 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MinLength,
+} from 'class-validator';
 
 export class UpdateUserDto {
   @ApiPropertyOptional({ description: 'Unique username for the user.' })
@@ -11,6 +19,7 @@ export class UpdateUserDto {
   @ApiPropertyOptional({ description: 'New user password.', writeOnly: true })
   @IsOptional()
   @IsString()
+  @MinLength(8)
   password?: string;
 
   @ApiPropertyOptional({

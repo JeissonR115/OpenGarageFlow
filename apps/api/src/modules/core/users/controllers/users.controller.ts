@@ -42,6 +42,7 @@ export class UsersController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiOkResponse({ description: 'User retrieved successfully.', type: UserResponseDto })
+  @ApiBadRequestResponse({ description: 'Invalid user ID.' })
   @ApiNotFoundResponse({ description: 'User was not found.' })
   async findById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.findById(id);
@@ -50,7 +51,7 @@ export class UsersController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update a user' })
   @ApiOkResponse({ description: 'User updated successfully.', type: UserResponseDto })
-  @ApiBadRequestResponse({ description: 'Invalid request data.' })
+  @ApiBadRequestResponse({ description: 'Invalid user ID or request data.' })
   @ApiConflictResponse({ description: 'Username, employee or role validation failed.' })
   @ApiNotFoundResponse({ description: 'User was not found.' })
   async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -60,6 +61,7 @@ export class UsersController {
   @Delete(':id')
   @ApiOperation({ summary: 'Soft delete a user' })
   @ApiOkResponse({ description: 'User deactivated successfully.', type: UserResponseDto })
+  @ApiBadRequestResponse({ description: 'Invalid user ID.' })
   @ApiNotFoundResponse({ description: 'User was not found.' })
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.remove(id);

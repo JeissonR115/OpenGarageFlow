@@ -3,11 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EmployeeResponseDto } from '../../employees/dto/employee-response.dto';
 import { RoleResponseDto } from '../../roles/dto/role-response.dto';
 
-export class UserRoleResponseDto {
-  @ApiProperty({ type: () => RoleResponseDto })
-  role!: RoleResponseDto;
-}
-
 export class UserResponseDto {
   @ApiProperty()
   id!: string;
@@ -24,6 +19,6 @@ export class UserResponseDto {
   @ApiProperty({ type: () => EmployeeResponseDto })
   employee!: EmployeeResponseDto;
 
-  @ApiProperty({ type: () => UserRoleResponseDto, isArray: true })
-  roles!: UserRoleResponseDto[];
+  @ApiProperty({ type: () => RoleResponseDto, isArray: true })
+  roles!: RoleResponseDto[];
 }

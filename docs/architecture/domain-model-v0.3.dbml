@@ -74,6 +74,7 @@ Table Role {
 
   name varchar [unique]
   description text
+  active boolean [not null, default: true]
 
   created_at timestamp
 }

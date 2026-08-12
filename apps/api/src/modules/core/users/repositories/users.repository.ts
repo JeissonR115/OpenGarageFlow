@@ -17,11 +17,14 @@ export class UsersRepository {
         employee: {
           select: {
             id: true,
+            branchId: true,
             firstName: true,
             lastName: true,
             email: true,
             phone: true,
             active: true,
+            createdAt: true,
+            updatedAt: true,
           },
         },
         roles: {
@@ -31,6 +34,8 @@ export class UsersRepository {
                 id: true,
                 name: true,
                 description: true,
+                active: true,
+                createdAt: true,
               },
             },
           },
@@ -52,11 +57,14 @@ export class UsersRepository {
         employee: {
           select: {
             id: true,
+            branchId: true,
             firstName: true,
             lastName: true,
             email: true,
             phone: true,
             active: true,
+            createdAt: true,
+            updatedAt: true,
           },
         },
         roles: {
@@ -66,6 +74,8 @@ export class UsersRepository {
                 id: true,
                 name: true,
                 description: true,
+                active: true,
+                createdAt: true,
               },
             },
           },
@@ -167,11 +177,14 @@ export class UsersRepository {
           employee: {
             select: {
               id: true,
+              branchId: true,
               firstName: true,
               lastName: true,
               email: true,
               phone: true,
               active: true,
+              createdAt: true,
+              updatedAt: true,
             },
           },
           roles: {
@@ -181,6 +194,8 @@ export class UsersRepository {
                   id: true,
                   name: true,
                   description: true,
+                  active: true,
+                  createdAt: true,
                 },
               },
             },
@@ -237,11 +252,14 @@ export class UsersRepository {
         employee: {
           select: {
             id: true,
+            branchId: true,
             firstName: true,
             lastName: true,
             email: true,
             phone: true,
             active: true,
+            createdAt: true,
+            updatedAt: true,
           },
         },
         roles: {
@@ -251,6 +269,8 @@ export class UsersRepository {
                 id: true,
                 name: true,
                 description: true,
+                active: true,
+                createdAt: true,
               },
             },
           },

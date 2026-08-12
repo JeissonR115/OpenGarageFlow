@@ -9,4 +9,10 @@ export class RoleResponseDto {
 
   @ApiProperty({ nullable: true })
   description!: string | null;
+
+  @ApiProperty()
+  active!: boolean;
+
+  @ApiProperty({ format: 'date-time' })
+  createdAt!: Date;
 }

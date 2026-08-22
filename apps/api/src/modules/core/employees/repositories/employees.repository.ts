@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '../../../../../prisma/generated/client';
 import { PrismaService } from '../../../../prisma/prisma.service';
 
 const employeeSelect = {
@@ -30,27 +31,11 @@ export class EmployeesRepository {
     return this.prisma.branch.findUnique({ where: { id }, select: { id: true } });
   }
 
-  async create(data: {
-    branchId: string;
-    firstName: string;
-    lastName: string;
-    email?: string;
-    phone?: string;
-  }) {
+  async create(data: Prisma.EmployeeUncheckedCreateInput) {
     return this.prisma.employee.create({ data, select: employeeSelect });
   }
 
-  async update(
-    id: string,
-    data: {
-      branchId?: string;
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-      phone?: string;
-      active?: boolean;
-    },
-  ) {
+  async update(id: string, data: Prisma.EmployeeUncheckedUpdateInput) {
     return this.prisma.employee.update({ where: { id }, data, select: employeeSelect });
   }
 

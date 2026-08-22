@@ -28,6 +28,8 @@ export class AppService {
 
   private getDomains(): Record<string, string[]> {
     const domains = new Map<string, Set<string>>();
+    const globalPrefix = this.configService.getOrThrow<string>('app.globalPrefix');
+    const apiVersion = this.configService.getOrThrow<string>('app.apiVersion');
 
     for (const controller of this.discoveryService.getControllers()) {
       if (!controller.metatype) {
@@ -47,7 +49,7 @@ export class AppService {
         const domain = normalizedPath.split('/')[0];
         const routes = domains.get(domain) ?? new Set<string>();
 
-        routes.add(`/${normalizedPath}`);
+        routes.add(`/${globalPrefix}/v${apiVersion}/${normalizedPath}`);
         domains.set(domain, routes);
       }
     }

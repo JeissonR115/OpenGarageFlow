@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '../../../../../prisma/generated/client';
 import { PrismaService } from '../../../../prisma/prisma.service';
 
 @Injectable()
@@ -139,16 +140,7 @@ export class UsersRepository {
     });
   }
 
-  async createUser(
-    data: {
-      username: string;
-      passwordHash: string;
-      employeeId: string;
-      active: boolean;
-      lastLogin: Date | null;
-    },
-    roleIds: string[],
-  ) {
+  async createUser(data: Prisma.UserUncheckedCreateInput, roleIds: string[]) {
     const createdUser = await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
@@ -209,11 +201,7 @@ export class UsersRepository {
       : null;
   }
 
-  async updateUser(
-    id: string,
-    data: { username?: string; passwordHash?: string; employeeId?: string; active?: boolean },
-    roleIds?: string[],
-  ) {
+  async updateUser(id: string, data: Prisma.UserUncheckedUpdateInput, roleIds?: string[]) {
     if (roleIds) {
       await this.prisma.$transaction([
         this.prisma.user.update({

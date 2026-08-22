@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
+import { Prisma } from '../../../../../prisma/generated/client';
+
+import { CreateCompanyDto } from '../dto/create-company.dto';
+import { UpdateCompanyDto } from '../dto/update-company.dto';
 import { CompaniesRepository } from '../repositories/companies.repository';
 
 @Injectable()
@@ -20,15 +24,24 @@ export class CompaniesService {
     return company;
   }
 
-  create(): never {
-    throw new NotImplementedException();
+  async create(createCompanyDto: CreateCompanyDto) {
+    return this.companiesRepository.create(createCompanyDto);
   }
 
-  update(): never {
-    throw new NotImplementedException();
+  async update(id: string, updateCompanyDto: UpdateCompanyDto) {
+    try {
+      await this.findById(id);
+      return await this.companiesRepository.update(id, updateCompanyDto);
+    } catch (error) {
+      this.handlePrismaError(error);
+    }
   }
 
-  remove(): never {
-    throw new NotImplementedException();
+  private handlePrismaError(error: unknown): never {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+      throw new NotFoundException('Company was not found.');
+    }
+
+    throw error;
   }
 }

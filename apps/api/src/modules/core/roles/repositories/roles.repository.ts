@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '../../../../../prisma/generated/client';
 import { PrismaService } from '../../../../prisma/prisma.service';
 
 const roleSelect = {
@@ -26,11 +27,11 @@ export class RolesRepository {
     return this.prisma.role.findUnique({ where: { name }, select: { id: true, name: true } });
   }
 
-  async create(data: { name: string; description?: string }) {
+  async create(data: Prisma.RoleCreateInput) {
     return this.prisma.role.create({ data, select: roleSelect });
   }
 
-  async update(id: string, data: { name?: string; description?: string; active?: boolean }) {
+  async update(id: string, data: Prisma.RoleUpdateInput) {
     return this.prisma.role.update({ where: { id }, data, select: roleSelect });
   }
 

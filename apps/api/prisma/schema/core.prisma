@@ -6,7 +6,7 @@ model Company {
   id        String @id @default(uuid()) @db.Uuid
   name      String
   legalName String @map("legal_name")
-  taxId     String @map("tax_id")
+  taxId     String @unique @map("tax_id")
 
   phone   String?
   email   String?

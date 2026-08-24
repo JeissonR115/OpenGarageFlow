@@ -19,6 +19,7 @@ async function bootstrap(): Promise<void> {
   const swaggerEnabled = config.getOrThrow<boolean>('swagger.enabled');
 
   const { name, version, host, port, globalPrefix, docsPath, corsOrigin, apiVersion } = appConfig;
+  const loginPath = `/${globalPrefix}/v${apiVersion}/auth/login`;
 
   app.setGlobalPrefix(globalPrefix, {
     exclude: [{ path: '/', method: RequestMethod.GET }],
@@ -45,6 +46,15 @@ async function bootstrap(): Promise<void> {
         .setTitle(name)
         .setDescription('API for garage/workshop management platform')
         .setVersion(version)
+        .addBearerAuth(
+          {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+            description: `Enter the JWT returned by POST ${loginPath}.`,
+          },
+          'bearer',
+        )
         .build(),
     );
 

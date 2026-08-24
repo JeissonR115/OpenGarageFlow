@@ -1,6 +1,18 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -8,7 +20,9 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 
+import { AuthenticatedUser, JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { CreateUserWithEmployeeDto } from '../dto/create-user-with-employee.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -30,6 +44,8 @@ export class UsersController {
   }
 
   @Post('with-employee')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Create an employee and associated user' })
   @ApiCreatedResponse({
     description: 'Employee and user created successfully.',
@@ -38,8 +54,11 @@ export class UsersController {
   @ApiBadRequestResponse({ description: 'Invalid request data.' })
   @ApiConflictResponse({ description: 'Username or relationship is already in use.' })
   @ApiNotFoundResponse({ description: 'Branch or one or more active roles were not found.' })
-  async createWithEmployee(@Body() createUserWithEmployeeDto: CreateUserWithEmployeeDto) {
-    return this.usersService.createWithEmployee(createUserWithEmployeeDto);
+  async createWithEmployee(
+    @Body() createUserWithEmployeeDto: CreateUserWithEmployeeDto,
+    @Req() request: Request & { user: AuthenticatedUser },
+  ) {
+    return this.usersService.createWithEmployee(createUserWithEmployeeDto, request.user.sub);
   }
 
   @Get()

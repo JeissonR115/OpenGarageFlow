@@ -129,11 +129,13 @@ export class UsersRepository {
     });
   }
 
-  async findBranchById(branchId: string) {
-    return this.prisma.branch.findUnique({
-      where: { id: branchId },
-      select: { id: true },
+  async findBranchForUser(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId, active: true },
+      select: { employee: { select: { branch: { select: { id: true } } } } },
     });
+
+    return user?.employee.branch ?? null;
   }
 
   async findRolesByIds(roleIds: string[]) {

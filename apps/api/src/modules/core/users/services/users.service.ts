@@ -70,13 +70,13 @@ export class UsersService {
     }
   }
 
-  async createWithEmployee(createUserWithEmployeeDto: CreateUserWithEmployeeDto) {
+  async createWithEmployee(createUserWithEmployeeDto: CreateUserWithEmployeeDto, userId: string) {
     try {
-      const { branchId, username, password, roleIds } = createUserWithEmployeeDto;
+      const { username, password, roleIds } = createUserWithEmployeeDto;
 
-      const branch = await this.usersRepository.findBranchById(branchId);
+      const branch = await this.usersRepository.findBranchForUser(userId);
       if (!branch) {
-        throw new NotFoundException(`Branch with ID ${branchId} was not found.`);
+        throw new NotFoundException('The authenticated user is not assigned to a branch.');
       }
 
       const existingUser = await this.usersRepository.findByUsername(username);
@@ -96,7 +96,7 @@ export class UsersService {
         lastName: createUserWithEmployeeDto.lastName,
         email: createUserWithEmployeeDto.email,
         phone: createUserWithEmployeeDto.phone,
-        branchId,
+        branchId: branch.id,
         username,
         passwordHash,
         roleIds,

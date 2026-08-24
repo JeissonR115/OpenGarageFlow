@@ -1,5 +1,13 @@
 # AGENTS.md — Guidance for AI coding agents
 
+## For AI Agents
+
+This file provides concise, actionable guidance for AI coding agents working in this repository:
+
+- Quick purpose: help agents find build/test commands, conventions, likely pitfalls, and where to make changes.
+- Quick commands: `pnpm install`, `pnpm dev`, `pnpm api:dev`, `pnpm web:dev`.
+- When in doubt, consult the linked READMEs (root, apps/api, apps/web) before making changes.
+
 ## Purpose
 
 Short instructions to help AI agents be productive in this repository.

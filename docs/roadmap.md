@@ -13,18 +13,18 @@ The first milestone focuses on establishing the project's architecture and devel
 
 - [x] Initialize the project structure
 - [x] Configure the development environment
-- [ ] Define the database model
-- [ ] Implement authentication
-- [ ] Build the first application modules
+- [x] Define the database model
+- [-] Implement authentication
+- [-] Build the first application modules
 
 ### Planned Work
 
 - [x] Monorepo setup
 - [x] Docker development environment
 - [x] PostgreSQL integration
-- [-] Prisma ORM
-- [ ] Authentication (JWT)
-- [ ] Authorization (RBAC)
+- [x] Prisma ORM
+- [-] Authentication (JWT)
+- [-] Authorization (RBAC): roles module in progress
 - [ ] API documentation
 - [ ] CI configuration
 
@@ -36,9 +36,11 @@ The second milestone introduces the core business entities.
 
 ### Modules
 
-- [ ] Companies
+- [x] Companies
 - [ ] Branches
-- [ ] Employees
+- [-] Employees
+- [-] Roles and user-role assignments
+- [-] Users
 - [ ] Customers
 - [ ] Vehicles
 - [ ] Services
@@ -107,7 +109,7 @@ The following features are planned but are not part of the current roadmap.
 
 The first public version aims to deliver the following functionality:
 
-- [ ] Authentication
+- [-] Authentication
 - [ ] Customer Management
 - [ ] Vehicle Management
 - [ ] Work Orders

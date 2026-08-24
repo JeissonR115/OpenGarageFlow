@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { DatabaseHealthResponseDto, HealthResponseDto } from './dto/health-response.dto';
 import { HealthService } from './health.service';
 
 @ApiTags('Health')
@@ -10,16 +11,7 @@ export class HealthController {
 
   @Get()
   @ApiOperation({ summary: 'Check API availability' })
-  @ApiOkResponse({
-    description: 'The API is available.',
-    schema: {
-      example: {
-        status: 'ok',
-        database: 'connected',
-        timestamp: '2026-07-17T00:00:00.000Z',
-      },
-    },
-  })
+  @ApiOkResponse({ description: 'The API availability result.', type: HealthResponseDto })
   getHealth(): Promise<
     | { status: 'ok'; database: 'connected'; timestamp: string }
     | { status: 'error'; database: 'disconnected'; timestamp: string }
@@ -31,7 +23,7 @@ export class HealthController {
   @ApiOperation({ summary: 'Check database connectivity' })
   @ApiOkResponse({
     description: 'The database connectivity check result.',
-    schema: { example: { status: 'ok', database: 'connected' } },
+    type: DatabaseHealthResponseDto,
   })
   getDatabaseHealth(): Promise<
     { status: 'ok'; database: 'connected' } | { status: 'error'; database: 'disconnected' }

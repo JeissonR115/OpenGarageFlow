@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { SystemInfoResponseDto } from './dto/system-info-response.dto';
 import { InfoService } from './info.service';
 
 @ApiTags('System')
@@ -10,7 +11,7 @@ export class InfoController {
 
   @Get()
   @ApiOperation({ summary: 'Get system information' })
-  @ApiOkResponse({ description: 'The current system information.' })
+  @ApiOkResponse({ description: 'The current system information.', type: SystemInfoResponseDto })
   getSystemInfo(): {
     name: string;
     version: string;

@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, IsUUID, MinLength } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  ArrayUnique,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({ description: 'Unique username for the user.' })
@@ -28,6 +36,7 @@ export class CreateUserDto {
   })
   @IsArray()
   @ArrayNotEmpty()
+  @ArrayUnique()
   @IsUUID(undefined, { each: true })
   roleIds!: string[];
 }

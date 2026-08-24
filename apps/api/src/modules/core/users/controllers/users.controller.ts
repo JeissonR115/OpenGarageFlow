@@ -9,6 +9,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { CreateUserWithEmployeeDto } from '../dto/create-user-with-employee.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserResponseDto } from '../dto/user-response.dto';
@@ -26,6 +27,19 @@ export class UsersController {
   @ApiConflictResponse({ description: 'Username, employee or role validation failed.' })
   async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+
+  @Post('with-employee')
+  @ApiOperation({ summary: 'Create an employee and associated user' })
+  @ApiCreatedResponse({
+    description: 'Employee and user created successfully.',
+    type: UserResponseDto,
+  })
+  @ApiBadRequestResponse({ description: 'Invalid request data.' })
+  @ApiConflictResponse({ description: 'Username or relationship is already in use.' })
+  @ApiNotFoundResponse({ description: 'Branch or one or more active roles were not found.' })
+  async createWithEmployee(@Body() createUserWithEmployeeDto: CreateUserWithEmployeeDto) {
+    return this.usersService.createWithEmployee(createUserWithEmployeeDto);
   }
 
   @Get()

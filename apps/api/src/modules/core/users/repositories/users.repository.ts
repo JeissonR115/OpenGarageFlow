@@ -129,6 +129,13 @@ export class UsersRepository {
     });
   }
 
+  async findBranchById(branchId: string) {
+    return this.prisma.branch.findUnique({
+      where: { id: branchId },
+      select: { id: true },
+    });
+  }
+
   async findRolesByIds(roleIds: string[]) {
     return this.prisma.role.findMany({
       where: {
@@ -138,6 +145,98 @@ export class UsersRepository {
         id: true,
       },
     });
+  }
+
+  async findActiveRolesByIds(roleIds: string[]) {
+    return this.prisma.role.findMany({
+      where: {
+        id: { in: roleIds },
+        active: true,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  async createUserWithEmployee(data: {
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+    branchId: string;
+    username: string;
+    passwordHash: string;
+    roleIds: string[];
+  }) {
+    const createdUser = await this.prisma.$transaction(async (tx) => {
+      const employee = await tx.employee.create({
+        data: {
+          branchId: data.branchId,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone,
+        },
+      });
+
+      const user = await tx.user.create({
+        data: {
+          employeeId: employee.id,
+          username: data.username,
+          passwordHash: data.passwordHash,
+          active: true,
+          lastLogin: null,
+        },
+      });
+
+      await tx.userRole.createMany({
+        data: data.roleIds.map((roleId) => ({
+          userId: user.id,
+          roleId,
+        })),
+      });
+
+      return tx.user.findUnique({
+        where: { id: user.id },
+        select: {
+          id: true,
+          username: true,
+          active: true,
+          lastLogin: true,
+          employee: {
+            select: {
+              id: true,
+              branchId: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              phone: true,
+              active: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+          roles: {
+            select: {
+              role: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                  active: true,
+                  createdAt: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    });
+
+    return createdUser
+      ? { ...createdUser, roles: createdUser.roles.map(({ role }) => role) }
+      : null;
   }
 
   async createUser(data: Prisma.UserUncheckedCreateInput, roleIds: string[]) {

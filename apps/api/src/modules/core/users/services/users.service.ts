@@ -3,6 +3,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { Prisma } from '../../../../../prisma/generated/client';
 
 import { PasswordService } from '../../../auth/services/password.service';
+import { CreateUserWithEmployeeDto } from '../dto/create-user-with-employee.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UsersRepository } from '../repositories/users.repository';
@@ -64,6 +65,42 @@ export class UsersService {
         },
         roleIds,
       );
+    } catch (error) {
+      this.handlePrismaError(error);
+    }
+  }
+
+  async createWithEmployee(createUserWithEmployeeDto: CreateUserWithEmployeeDto) {
+    try {
+      const { branchId, username, password, roleIds } = createUserWithEmployeeDto;
+
+      const branch = await this.usersRepository.findBranchById(branchId);
+      if (!branch) {
+        throw new NotFoundException(`Branch with ID ${branchId} was not found.`);
+      }
+
+      const existingUser = await this.usersRepository.findByUsername(username);
+      if (existingUser) {
+        throw new ConflictException(`Username ${username} is already taken.`);
+      }
+
+      const roles = await this.usersRepository.findActiveRolesByIds(roleIds);
+      if (roles.length !== roleIds.length) {
+        throw new NotFoundException('One or more active roles were not found.');
+      }
+
+      const passwordHash = await this.passwordService.hash(password);
+
+      return await this.usersRepository.createUserWithEmployee({
+        firstName: createUserWithEmployeeDto.firstName,
+        lastName: createUserWithEmployeeDto.lastName,
+        email: createUserWithEmployeeDto.email,
+        phone: createUserWithEmployeeDto.phone,
+        branchId,
+        username,
+        passwordHash,
+        roleIds,
+      });
     } catch (error) {
       this.handlePrismaError(error);
     }

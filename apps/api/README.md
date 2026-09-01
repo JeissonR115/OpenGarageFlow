@@ -1,98 +1,181 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# OpenGarageFlow API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API principal de OpenGarageFlow, construida con NestJS, Prisma y PostgreSQL para gestionar operaciones de un taller automotriz: clientes, vehículos, inventario, órdenes de trabajo, empleados y autenticación.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Descripción
 
-## Description
+Esta aplicación expone la capa de negocio y acceso a datos del sistema. El backend está preparado para:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- servir endpoints REST versionados
+- usar validación global con DTOs
+- integrarse con Prisma para PostgreSQL
+- documentar la API con Swagger
+- mantener módulos funcionales separados por dominio
 
-## Project setup
+## Stack
 
-```bash
-$ pnpm install
+- [NestJS](https://nestjs.com/) 11
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Swagger OpenAPI
+- Jest para pruebas
+
+## Estructura del proyecto
+
+```text
+apps/api/
+├── prisma/
+│   ├── schema/
+│   ├── generated/
+│   ├── migrations/
+│   └── seed/
+├── src/
+│   ├── app.module.ts
+│   ├── app.controller.ts
+│   ├── app.service.ts
+│   ├── main.ts
+│   ├── common/
+│   ├── config/
+│   ├── dto/
+│   ├── modules/
+│   │   ├── auth/
+│   │   ├── core/
+│   │   ├── crm/
+│   │   └── system/
+│   └── prisma/
+├── test/
+├── package.json
+├── tsconfig.json
+├── nest-cli.json
+└── README.md
 ```
 
-## Compile and run the project
+## Requisitos
+
+- Node.js 22+ o 24+
+- pnpm
+- Docker y Docker Compose
+- PostgreSQL ejecutándose localmente
+
+## Configuración inicial
+
+Desde la raíz del monorepo:
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm install
 ```
 
-## Run tests
+Inicia la base de datos:
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+docker compose -f docker/compose.yml up -d
 ```
 
-## Deployment
+Asegúrate de configurar la variable de entorno `DATABASE_URL` para la API. La aplicación espera que el proyecto en [apps/api](.) tenga acceso a la base de datos PostgreSQL del entorno local.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Ejecutar la API
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Desde la raíz:
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+pnpm api:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+O desde la carpeta de la app:
 
-## Resources
+```bash
+cd apps/api
+pnpm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+La API se levanta con prefijo global y versionado URI. El arranque principal está en [src/main.ts](src/main.ts) y el módulo raíz en [src/app.module.ts](src/app.module.ts).
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Comandos útiles
 
-## Support
+```bash
+# desde la raíz
+pnpm api:dev
+pnpm api:test
+pnpm --dir apps/api run test:e2e
+pnpm --dir apps/api run lint
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# dentro de apps/api
+pnpm run start
+pnpm run start:dev
+pnpm run build
+pnpm run test
+pnpm run test:watch
+pnpm run test:cov
+pnpm run test:e2e
+```
 
-## Stay in touch
+## Convenciones del backend
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Módulos
 
-## License
+- Cada feature debe seguir el patrón: módulo, servicio y controlador.
+- Se prefieren carpetas bajo [src/modules](src/modules) con nombres de dominio como `auth`, `core`, `crm` y `system`.
+- Si se requieren DTOs compartidos, se colocan en [src/dto](src/dto).
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Bootstrap y configuración
+
+La aplicación usa:
+
+- prefijo global
+- versionado por URI
+- CORS activo
+- `ValidationPipe` con `whitelist`, `transform` y `forbidNonWhitelisted`
+- Swagger habilitado cuando la configuración lo permite
+
+Todo esto se configura en [src/main.ts](src/main.ts).
+
+### Prisma
+
+- Prisma es la capa de acceso a datos de la API.
+- El esquema y migraciones viven en [prisma](prisma).
+- No se debe saltar `PrismaService` para acceder a la base de datos desde servicios.
+- Los cambios de esquema deben ir acompañados de migración y validación.
+
+### Autenticación y contratos
+
+- Los endpoints deben seguir el versionado y el prefijo global.
+- Los inputs deben validarse con DTOs.
+- Se deben devolver respuestas tipadas; evitar filtrar modelos de Prisma directamente en controladores.
+
+## Testing
+
+Se recomienda escribir pruebas unitarias focalizadas cuando se agrega lógica backend.
+
+```bash
+cd apps/api
+pnpm run test
+pnpm run test:e2e
+```
+
+Usar `@nestjs/testing` para pruebas de módulos y servicios; el e2e debe cubrir comportamiento de rutas y contratos HTTP.
+
+## Swagger
+
+Si está habilitado, la documentación OpenAPI queda disponible en la ruta configurada por la app, normalmente bajo el prefijo global y la ruta de docs.
+
+## Archivos clave
+
+- [src/app.module.ts](src/app.module.ts)
+- [src/main.ts](src/main.ts)
+- [src/config](src/config)
+- [src/modules](src/modules)
+- [prisma](prisma)
+- [test](test)
+
+## Notas importantes
+
+- No asumir que los paquetes compartidos del monorepo ya tienen implementación; verificar antes de importarlos.
+- El foco principal del trabajo debe estar en la API, salvo que la tarea explícitamente involucre frontend.
+- Mantener cambios pequeños y alineados con la estructura actual del backend.
+
+## Referencias
+
+- [README.md](../../README.md)
+- [AGENTS.md](../../AGENTS.md)
+- [apps/web/README.md](../web/README.md)

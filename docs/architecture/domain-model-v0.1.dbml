@@ -1,0 +1,137 @@
+Table Company {
+  id uuid [pk]
+
+  name varchar
+  legal_name varchar
+  tax_id varchar
+
+  phone varchar
+  email varchar
+  website varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Branch {
+  id uuid [pk]
+
+  company_id uuid [not null]
+
+  name varchar
+
+  phone varchar
+  email varchar
+
+  address varchar
+  city varchar
+  state varchar
+  country varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Employee {
+  id uuid [pk]
+
+  branch_id uuid [not null]
+
+  first_name varchar
+  last_name varchar
+
+  email varchar
+  phone varchar
+
+  active boolean
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Customer {
+  id uuid [pk]
+
+  first_name varchar
+  last_name varchar
+
+  email varchar
+  phone varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table VehicleBrand {
+  id uuid [pk]
+
+  name varchar
+
+  created_at timestamp
+}
+
+Table VehicleModel {
+  id uuid [pk]
+
+  brand_id uuid [not null]
+
+  name varchar
+
+  created_at timestamp
+}
+
+Table Vehicle {
+  id uuid [pk]
+
+  customer_id uuid [not null]
+  brand_id uuid [not null]
+  model_id uuid [not null]
+
+  plate varchar
+  vin varchar
+
+  year int
+
+  color varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table WorkOrder {
+  id uuid [pk]
+
+  branch_id uuid [not null]
+  customer_id uuid [not null]
+  vehicle_id uuid [not null]
+
+  order_number varchar
+
+  received_at timestamp
+  completed_at timestamp
+
+  status varchar
+
+  observations text
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Ref: Branch.company_id > Company.id
+
+Ref: Employee.branch_id > Branch.id
+
+Ref: Vehicle.customer_id > Customer.id
+
+Ref: Vehicle.brand_id > VehicleBrand.id
+
+Ref: Vehicle.model_id > VehicleModel.id
+
+Ref: VehicleModel.brand_id > VehicleBrand.id
+
+Ref: WorkOrder.branch_id > Branch.id
+
+Ref: WorkOrder.customer_id > Customer.id
+
+Ref: WorkOrder.vehicle_id > Vehicle.id

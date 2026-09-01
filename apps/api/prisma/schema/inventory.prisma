@@ -1,0 +1,19 @@
+// ======================================================
+// INVENTORY
+// ======================================================
+
+//
+// Módulo pendiente.
+//
+// Futuras entidades:
+//
+// InventoryLocation
+// ProductStock
+// StockMovement
+// PurchaseOrder
+// Supplier
+// InventoryAdjustment
+//
+// Este módulo será opcional y podrá integrarse con WorkOrder
+// para descontar automáticamente productos utilizados.
+//

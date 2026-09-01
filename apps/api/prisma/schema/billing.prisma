@@ -1,0 +1,18 @@
+// ======================================================
+// BILLING
+// ======================================================
+
+//
+// Módulo pendiente.
+//
+// Futuras entidades:
+//
+// Invoice
+// InvoiceItem
+// Payment
+// PaymentMethod
+// Tax
+//
+// Permitirá facturar las órdenes de trabajo,
+// registrar pagos y generar reportes.
+//

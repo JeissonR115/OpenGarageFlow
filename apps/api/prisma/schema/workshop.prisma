@@ -1,0 +1,132 @@
+// ======================================================
+// WORKSHOP
+// ======================================================
+
+model WorkOrder {
+  id String @id @default(uuid()) @db.Uuid
+
+  branchId String @map("branch_id") @db.Uuid
+  branch   Branch @relation(fields: [branchId], references: [id])
+
+  vehicleId String  @map("vehicle_id") @db.Uuid
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  typeId String        @map("type_id") @db.Uuid
+  type   WorkOrderType @relation(fields: [typeId], references: [id])
+
+  statusId String          @map("status_id") @db.Uuid
+  status   WorkOrderStatus @relation(fields: [statusId], references: [id])
+
+  orderNumber String @unique @map("order_number")
+
+  receivedByEmployeeId String?   @map("received_by_employee_id") @db.Uuid
+  receivedByEmployee   Employee? @relation(fields: [receivedByEmployeeId], references: [id])
+
+  warrantyId String?   @map("warranty_id") @db.Uuid
+  warranty   Warranty? @relation("WarrantyWorkOrders", fields: [warrantyId], references: [id])
+
+  receivedAt  DateTime? @map("received_at")
+  completedAt DateTime? @map("completed_at")
+
+  observations String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  employees WorkOrderEmployee[]
+  services  WorkOrderService[]
+  items     WorkOrderItem[]
+  photos    WorkOrderPhoto[]
+
+  warranties Warranty[] @relation("OriginalWorkOrder")
+
+  @@index([branchId])
+  @@index([vehicleId])
+  @@index([statusId])
+  @@index([typeId])
+  @@index([warrantyId])
+  @@map("work_orders")
+}
+
+model WorkOrderEmployee {
+  workOrderId String @map("work_order_id") @db.Uuid
+  employeeId  String @map("employee_id") @db.Uuid
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id])
+
+  employee                Employee               @relation(fields: [employeeId], references: [id])
+  workOrderEmployeeRole   WorkOrderEmployeeRole? @relation(fields: [workOrderEmployeeRoleId], references: [id])
+  workOrderEmployeeRoleId String?                @db.Uuid
+
+  @@id([workOrderId, employeeId])
+  @@index([employeeId])
+  @@map("work_order_employees")
+}
+
+model WorkOrderService {
+  id String @id @default(uuid()) @db.Uuid
+
+  workOrderId String    @map("work_order_id") @db.Uuid
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id])
+
+  serviceId String  @map("service_id") @db.Uuid
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  quantity Decimal @db.Decimal(10, 2)
+
+  unitPrice Decimal @map("unit_price") @db.Decimal(10, 2)
+
+  subtotal Decimal @db.Decimal(10, 2)
+
+  notes String?
+
+  photos WorkOrderPhoto[]
+
+  @@index([workOrderId])
+  @@index([serviceId])
+  @@map("work_order_services")
+}
+
+model WorkOrderItem {
+  id String @id @default(uuid()) @db.Uuid
+
+  workOrderId String    @map("work_order_id") @db.Uuid
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id])
+
+  productId String  @map("product_id") @db.Uuid
+  product   Product @relation(fields: [productId], references: [id])
+
+  quantity Decimal @db.Decimal(10, 2)
+
+  unitPrice Decimal @map("unit_price") @db.Decimal(10, 2)
+
+  subtotal Decimal @db.Decimal(10, 2)
+
+  @@index([workOrderId])
+  @@index([productId])
+  @@map("work_order_items")
+}
+
+model WorkOrderPhoto {
+  id String @id @default(uuid()) @db.Uuid
+
+  workOrderId String    @map("work_order_id") @db.Uuid
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id])
+
+  photoTypeId String             @map("photo_type_id") @db.Uuid
+  photoType   WorkOrderPhotoType @relation(fields: [photoTypeId], references: [id])
+
+  serviceId String?           @map("service_id") @db.Uuid
+  service   WorkOrderService? @relation(fields: [serviceId], references: [id])
+
+  storagePath String @map("storage_path")
+
+  description String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([workOrderId])
+  @@index([photoTypeId])
+  @@index([serviceId])
+  @@map("work_order_photos")
+}

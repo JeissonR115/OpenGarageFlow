@@ -5,40 +5,86 @@ The roadmap is subject to change as the project evolves.
 
 ---
 
+## Current status
+
+The project is in the early implementation phase. The monorepo structure, NestJS API app, Prisma setup, Docker environment, and initial backend module scaffolding are already in place. The main focus now is completing the base domain model and the authentication/authorization foundation before moving into workshop workflows.
+
+### Already in place
+
+- [x] Monorepo setup
+- [x] Docker development environment
+- [x] PostgreSQL integration
+- [x] Prisma schema and migration structure
+- [x] NestJS API bootstrap and app configuration
+- [x] Global validation, versioning, CORS, and Swagger setup
+- [x] Initial module scaffolding: `auth`, `core`, `crm`, `system`
+- [x] Documentation structure and agent guidance
+
+### Pending foundation work
+
+- [ ] Complete JWT auth flow
+- [ ] Finish role and permission model
+- [ ] Connect domain modules to Prisma models consistently
+- [ ] Define and enforce API response conventions
+- [ ] Add CI and lint/test quality gates
+- [ ] Finish API documentation coverage
+
+---
+
 ## Version 0.1.0 — Foundation
 
-The first milestone focuses on establishing the project's architecture and development environment.
+The first milestone focuses on establishing the project architecture, backend conventions, and working infrastructure.
 
 ### Goals
 
 - [x] Initialize the project structure
 - [x] Configure the development environment
+<<<<<<< Updated upstream
 - [ ] Define the database model
 - [ ] Implement authentication
 - [ ] Build the first application modules
+=======
+- [x] Define the data-access foundation with Prisma
+- [x] Bootstrap the NestJS API
+- [ ] Implement the authentication flow
+- [ ] Finalize the authorization model
+- [ ] Build the first production-ready business modules
+>>>>>>> Stashed changes
 
-### Planned Work
+### Planned work
 
-- [x] Monorepo setup
+- [x] Monorepo and workspace configuration
 - [x] Docker development environment
 - [x] PostgreSQL integration
+<<<<<<< Updated upstream
 - [-] Prisma ORM
 - [ ] Authentication (JWT)
 - [ ] Authorization (RBAC)
 - [ ] API documentation
+=======
+- [x] Prisma ORM setup
+- [ ] Authentication (JWT)
+- [ ] Authorization (RBAC)
+- [ ] API documentation coverage
+>>>>>>> Stashed changes
 - [ ] CI configuration
 
 ---
 
 ## Version 0.2.0 — Core Business
 
-The second milestone introduces the core business entities.
+The second milestone introduces the core business entities required to operate a workshop platform.
 
 ### Modules
 
 - [ ] Companies
 - [ ] Branches
 - [ ] Employees
+<<<<<<< Updated upstream
+=======
+- [ ] Roles and user-role assignments
+- [ ] Users
+>>>>>>> Stashed changes
 - [ ] Customers
 - [ ] Vehicles
 - [ ] Services
@@ -48,7 +94,7 @@ The second milestone introduces the core business entities.
 
 ## Version 0.3.0 — Workshop Operations
 
-This release focuses on the daily workflow inside a workshop.
+This release focuses on the day-to-day workflow inside a workshop.
 
 ### Modules
 
@@ -75,7 +121,7 @@ Inventory management becomes part of the platform.
 
 ## Version 0.5.0 — Reports
 
-Introduce reporting capabilities.
+Introduce analytical and operational reporting capabilities.
 
 ### Modules
 
@@ -127,3 +173,10 @@ The objective is to build a stable and functional foundation before introducing 
 | 0.3.0   | Planned     |
 | 0.4.0   | Planned     |
 | 0.5.0   | Planned     |
+
+## Recommended next milestone
+
+1. Complete the auth and RBAC foundation.
+2. Model the central domain entities: users, employees, customers, vehicles, and branches.
+3. Implement the first CRUD set under the API modules and connect them to Prisma.
+4. Validate the flow with tests and Swagger examples before adding workshop operations.

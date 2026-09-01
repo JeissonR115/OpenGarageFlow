@@ -2,187 +2,127 @@
 
 ## Purpose
 
-Short instructions to help AI agents be productive in this repository.
+This repo is a monorepo for OpenGarageFlow. The main implementation is the NestJS API in [apps/api](apps/api), and this file is intentionally biased toward backend work so agents can be productive in the API app without losing the repo context.
 
 ## Quick links
 
-- [README.md](README.md) — Project overview
-- [apps/api/README.md](apps/api/README.md) — Backend documentation
-- [apps/web/README.md](apps/web/README.md) — Frontend documentation
+- [README.md](README.md) — project overview
+- [apps/api/README.md](apps/api/README.md) — backend docs and NestJS starter notes
+- [apps/web/README.md](apps/web/README.md) — frontend app context
+- [apps/api/src/app.module.ts](apps/api/src/app.module.ts) — top-level API module composition
+- [apps/api/src/main.ts](apps/api/src/main.ts) — bootstrap, validation, CORS, Swagger, versioning
+- [apps/api/prisma/schema](apps/api/prisma/schema) — Prisma schema files
 
-## Project Status & Important Notes
+## API-first repo context
 
-🔧 **This project is in early development.** All shared packages (`@open-garage-flow/auth`, `@open-garage-flow/config`, `@open-garage-flow/database`, `@open-garage-flow/shared`, `@open-garage-flow/ui`) are currently **scaffolded but empty**. Prisma is initialized with a basic schema, but no database models have been defined yet. Do not assume implementations exist in these packages — verify before using.
+- The core product logic lives in [apps/api](apps/api).
+- The app uses NestJS 11 with modular feature folders under [apps/api/src/modules](apps/api/src/modules).
+- The API is configured as a versioned, prefixed REST service with Swagger and global validation enabled in [apps/api/src/main.ts](apps/api/src/main.ts).
+- Database access is Prisma-based; Prisma setup and schema files are under [apps/api/prisma](apps/api/prisma).
+- The web app is secondary context; do not treat it as the primary implementation target unless the task explicitly concerns the frontend.
 
-## Repository overview
+## Local workflow for the API app
 
-- **Root layout**: `apps/`, `packages/`, `docker/`, `scripts/`.
-- **apps/api**: NestJS 11 backend. Backend code lives under `apps/api/src/` and `apps/api/test/`. Currently only bootstrap files (`app.module.ts`, `app.controller.ts`, `app.service.ts`, `main.ts`). Feature modules expected to follow NestJS conventions (e.g., `users/`, `auth/`, `customers/`).
-- **apps/web**: Next.js 16 frontend with App Directory (server components by default). Code lives under `apps/web/app/` and `apps/web/public/`. Uses Tailwind CSS 4 and PostCSS.
-- **packages/**: Shared implementation directories (`auth`, `config`, `database`, `shared`, `ui`). Each has a `package.json` but contains no implementation code yet. Import using `@open-garage-flow/<package-name>` syntax.
-- **Workspace configuration**: Uses `pnpm-workspace.yaml` (pnpm 11.11.0+), `pnpm-lock.yaml`, and root `package.json` with orchestration scripts. No root TypeScript code — all code in `apps/` or `packages/`.
+1. Install dependencies from the repo root:
+   ```bash
+   pnpm install
+   ```
+2. Start PostgreSQL:
+   ```bash
+   docker compose -f docker/compose.yml up -d
+   ```
+3. Configure env vars for the API, especially `DATABASE_URL` in [apps/api](apps/api).
+4. Start the backend in watch mode:
+   ```bash
+   pnpm api:dev
+   ```
+   or:
+   ```bash
+   cd apps/api && pnpm run start:dev
+   ```
+5. Run targeted backend checks:
+   ```bash
+   pnpm api:test
+   pnpm --dir apps/api run test:e2e
+   ```
 
-## Getting Started (Local Development)
+## Backend conventions
 
-1. **Prerequisites**: Node 24+ and pnpm 11.11.0+ (or Node 22.13+ with compatible pnpm version).
-2. **Install dependencies**: `pnpm install` (from workspace root).
-3. **Generate Prisma client**: `cd apps/api && pnpm prisma:generate`.
-4. **Start PostgreSQL**: `docker-compose -f docker/compose.yml up -d`.
-5. **Configure database** in `apps/api/.env`:
-   - Set `DATABASE_URL` (example: `postgresql://admin:admin@localhost:5433/opengarageflow`)
-   - See `apps/api/.env.example` for reference.
-6. **Run both services**:
-   - `pnpm dev` (all services in parallel)
-   - Or individual services: `pnpm api:dev` (backend at http://localhost:3001) and `pnpm web:dev` (frontend at http://localhost:3000)
-7. **Backend API docs**: http://localhost:3001/api (Swagger auto-configured via `@nestjs/swagger`)
+### Structure and naming
 
-## Database & Prisma Setup
+- Use the NestJS module/service/controller pattern for each feature.
+- Prefer directories under [apps/api/src/modules](apps/api/src/modules) with names like `auth`, `core`, `crm`, `system`.
+- Keep files aligned with NestJS conventions: `*.module.ts`, `*.service.ts`, `*.controller.ts`, `*.spec.ts`, `*.e2e-spec.ts`.
+- For DTOs and validators, place them close to the feature or under [apps/api/src/dto](apps/api/src/dto) if shared.
 
-- **Status**: ✅ Prisma initialized at `apps/api/prisma/schema.prisma` with PostgreSQL datasource.
-- **Database**: PostgreSQL 17 configured in `docker/compose.yml`.
-- **Environment**: Database connection via `DATABASE_URL` in `apps/api/.env` (e.g., `postgresql://admin:admin@localhost:5433/opengarageflow`).
-- **PrismaService**: Located at `apps/api/src/common/prisma/prisma.service.ts`. Extends PrismaClient with lifecycle hooks (OnModuleInit/OnModuleDestroy).
-- **PrismaModule**: Located at `apps/api/src/common/prisma/prisma.module.ts`. Exports PrismaService for dependency injection across features.
-- **Scripts**: `pnpm prisma:generate`, `pnpm prisma:format`, `pnpm prisma:validate`, `pnpm prisma:studio` (run from `apps/api/`).
-- **Migrations**: Use Prisma migrations in `apps/api` via `prisma migrate dev`. SQL init scripts can be placed in `docker/postgres/init/` if needed.
-- **Backend integration**: Import PrismaService in NestJS modules via PrismaModule. Example: add PrismaModule to imports, inject PrismaService into services.
+### Application bootstrap
 
-## TypeScript & Path Configuration
+- The application entry point is [apps/api/src/main.ts](apps/api/src/main.ts).
+- Respect the existing bootstrap behavior:
+  - global prefix
+  - versioning via URI path
+  - CORS
+  - validation pipe with `whitelist`, `transform`, and `forbidNonWhitelisted`
+  - Swagger docs if enabled
+- Do not add ad hoc app-level bootstrap logic without checking whether it belongs in a config module or feature module.
 
-- **Base config**: `tsconfig.base.json` enables strict mode (`strict: true`, `strictNullChecks: true`).
-- **Path aliases**: Currently empty (`paths: {}`). When adding, update `tsconfig.base.json#compilerOptions.paths` and reference in app-specific `tsconfig.json` files. Example: `"@/*": ["app/*"]` for frontend (already used but needs verification in `tsconfig`).
-- **All code is TypeScript**. No JavaScript files unless strictly necessary (e.g., ESLint config).
+### Config and environment
 
-## Architecture Guidance
+- Configuration is centralized in the API config package under [apps/api/src/config](apps/api/src/config).
+- Read env values through `@nestjs/config` and avoid hardcoded secrets or URLs.
+- Guard against missing env variables with typed config objects rather than implicit `process.env` lookups.
+- Keep environment names stable and consistent with config files already used by the app.
 
-- Follow the project principles: open-source SaaS, API-first, Docker-first, modular, Clean Architecture, domain-driven, multi-tenant shared DB, enterprise-ready.
-- Prefer workspace-level configuration. Do not create duplicate configurations at app or package level unless necessary.
-- Do not install dependencies inside individual apps unless strictly necessary—use pnpm `--filter` to scope installs.
-- **Reuse shared packages** (`@open-garage-flow/auth`, `@open-garage-flow/config`, `@open-garage-flow/shared`, `@open-garage-flow/ui`) rather than duplicating code. When these packages are empty (currently), propose their implementation structure first.
-- Preserve Node ecosystem conventions and keep naming consistent across backend, frontend, and packages.
-- Use **English** for code, comments, docs, API interfaces, variables, and database models.
+### Database and Prisma
 
-## Conventions & Common Commands
+- Prisma is the persistence layer for the API; do not bypass it with ad hoc SQL or direct database access in services.
+- Use the Prisma service/module pattern and inject `PrismaService` in feature services.
+- Before using Prisma models or generating client artifacts, verify whether the schema and generated client already exist in [apps/api/prisma](apps/api/prisma).
+- When changing Prisma schema, plan the migration and test the schema update before finalizing the change.
 
-### Root workspace commands
+### Auth and API contracts
+
+- API endpoints should be versioned and follow the established global prefix.
+- Use DTOs for request validation and API contract boundaries.
+- Prefer explicit, typed responses and avoid leaking raw Prisma models directly to controllers.
+- For auth flows, keep the JWT strategy and route-handling semantics consistent with the existing config and module structure.
+
+## Testing expectations for API work
+
+- Prefer writing or updating a focused unit spec for new backend logic.
+- Use `@nestjs/testing` for module- and service-level tests.
+- E2E coverage belongs in [apps/api/test](apps/api/test) and should be used for route-level behavior.
+- Run only the relevant backend tests for the changed feature when possible, instead of broad suite runs.
+
+## Project-specific pitfalls to avoid
+
+1. Do not assume shared packages are implemented; verify before importing from `@open-garage-flow/*`.
+2. Do not start writing new feature code without checking the existing module layout in [apps/api/src/modules](apps/api/src/modules).
+3. Do not ignore the database and env requirements: PostgreSQL and `DATABASE_URL` must be set up before app-level behavior is meaningful.
+4. Do not create duplicate config patterns when a NestJS config module already exists in [apps/api/src/config](apps/api/src/config).
+5. Do not add new API routes without considering versioning, DTO validation, and Swagger docs.
+6. Do not bypass the Prisma service for persistence or schema operations.
+
+## Agent behavior
+
+- Default to the API app unless the request explicitly targets frontend work.
+- Check existing code in [apps/api/src](apps/api/src) before introducing new modules or service patterns.
+- Prefer minimal, feature-scoped changes that follow the existing NestJS structure.
+- Keep naming and code style consistent with the repo’s TypeScript and NestJS conventions.
+- When the task is architectural, state the intended module/config pattern before implementing it.
+- Link to existing docs instead of duplicating them. Use [README.md](README.md), [apps/api/README.md](apps/api/README.md), and this file as the canonical references.
+
+## Useful commands
 
 ```bash
-pnpm install              # Install all dependencies
-pnpm dev                  # Start all services in parallel (api + web)
-pnpm build                # Build all apps
-pnpm lint                 # Lint all code
-pnpm test                 # Run tests for all packages
-pnpm format               # Format code with Prettier (printWidth: 100, singleQuote: true)
+pnpm install
+pnpm dev
+pnpm api:dev
+pnpm api:test
+pnpm --dir apps/api run test:e2e
+pnpm --dir apps/api run lint
 ```
-
-### Backend (apps/api) commands
-
-```bash
-pnpm api:dev              # Start NestJS dev server with watch mode (port 3001)
-pnpm api:build            # Build backend to dist/
-pnpm api:test             # Run Jest unit tests
-# Inside apps/api:
-pnpm run test:watch       # Watch mode for tests
-pnpm run test:cov         # Generate coverage report
-pnpm run test:e2e         # Run e2e tests (jest-e2e.json config)
-pnpm run start:prod       # Run production build
-```
-
-### Frontend (apps/web) commands
-
-```bash
-pnpm web:dev              # Start Next.js dev server (port 3000)
-pnpm web:build            # Build frontend (output: .next/)
-pnpm web:lint             # Lint frontend code
-```
-
-### Backend Code Structure (NestJS)
-
-- **Module pattern**: Create feature modules under `apps/api/src/[feature]/`. Example: `apps/api/src/users/users.module.ts`, `apps/api/src/users/users.service.ts`, `apps/api/src/users/users.controller.ts`.
-- **Naming**: Use `.service.ts`, `.controller.ts`, `.module.ts`, `.spec.ts`, `.e2e-spec.ts` suffixes.
-- **Testing**: Unit tests (`*.spec.ts`) use Jest and `@nestjs/testing`. E2e tests in `test/` directory use same Jest config.
-- **Database access**: Will use Prisma models from `@open-garage-flow/database` when implemented.
-- **Configuration**: Environment variables (e.g., `JWT_SECRET`, `JWT_EXPIRES_IN`, `HOST`, `PORT`) loaded via `dotenv`.
-
-### Frontend Code Structure (Next.js)
-
-- **App Directory**: Default React Server Components. Mark interactive sections with `'use client'`.
-- **Routing**: File-based routing under `apps/web/app/`. Example: `apps/web/app/dashboard/page.tsx` → route `/dashboard`.
-- **Styling**: Tailwind CSS 4 with PostCSS. Global styles in `apps/web/app/globals.css`.
-- **Environment**: Frontend API calls use `NEXT_PUBLIC_API_URL=http://localhost:3001` (in `.env.local`).
-- **Components**: Will import UI components from `@open-garage-flow/ui` when implemented.
-- **Layout**: Shared layout in `apps/web/app/layout.tsx`.
-
-### Testing Patterns
-
-- **Backend unit tests**: Jest in `apps/api/` with TypeScript support. Use `@nestjs/testing` for module testing.
-- **Backend e2e tests**: In `apps/api/test/` directory. Run with `pnpm run test:e2e`.
-- **Frontend tests**: No tests configured yet (Next.js testing setup pending).
-- **Coverage**: Generate backend coverage with `pnpm run test:cov`.
-
-### Shared Packages Status
-
-| Package                      | Purpose                                             | Status | Import                                        |
-| ---------------------------- | --------------------------------------------------- | ------ | --------------------------------------------- |
-| `@open-garage-flow/auth`     | Authentication logic, JWT utilities, auth guards    | Empty  | `import {} from '@open-garage-flow/auth'`     |
-| `@open-garage-flow/config`   | Centralized config, environment parsing, validation | Empty  | `import {} from '@open-garage-flow/config'`   |
-| `@open-garage-flow/database` | Prisma schema, migrations, model types              | Empty  | `import {} from '@open-garage-flow/database'` |
-| `@open-garage-flow/shared`   | Shared utilities, types, constants, helpers         | Empty  | `import {} from '@open-garage-flow/shared'`   |
-| `@open-garage-flow/ui`       | React components (forms, buttons, layouts, etc.)    | Empty  | `import {} from '@open-garage-flow/ui'`       |
-
-**When implementing shared packages:**
-
-1. Define `package.json#exports` clearly (ESM and CJS if needed).
-2. Place implementation code in `packages/[name]/src/`.
-3. Configure `tsconfig.json` to point to `src/` as entry.
-4. Export types and functions from `packages/[name]/src/index.ts`.
-5. Add to `tsconfig.base.json#paths` if needed (e.g., `"@open-garage-flow/auth": ["packages/auth/src"]`).
-
-### Code Quality
-
-- **TypeScript**: Strict mode enabled. All new code must be TypeScript.
-- **Linting**: ESLint configured at root. Use `pnpm lint` before committing.
-- **Formatting**: Prettier with `printWidth: 100`, `singleQuote: true`. Use `pnpm format`.
-- **Git**: Conventional commits recommended (e.g., `feat:`, `fix:`, `refactor:`, `docs:`).
-
-### Common Pitfalls & Gotchas
-
-1. **Shared packages are scaffolded but empty** — Always check if code exists before referencing it.
-2. **Backend bootstrap only** — Only `app.*.ts` files exist. New feature modules must follow NestJS folder conventions.
-3. **Frontend is template** — `page.tsx` still has create-next-app placeholder. Replace with actual dashboard.
-4. **Path aliases not fully configured** — `tsconfig.base.json#paths` is empty. Update as new packages are implemented.
-5. **Environment setup required** — Must run Docker for PostgreSQL and generate Prisma client before backend can connect to database.
-6. **JWT config exists but no auth module** — Environment variables (`JWT_SECRET`, `JWT_EXPIRES_IN`) are defined but `packages/auth` is not yet implemented.
-7. **No CI/CD defined** — GitHub Actions workflows are not yet configured. Plan deployment strategy before release.
-8. **Multi-tenant shared DB assumption** — Architecture assumes single PostgreSQL database with tenant isolation via schema/rows. Confirm this approach before adding tenancy logic.
-
-## Recommended Agent Behavior
-
-- **Verify before using**: Check if shared packages have implementations before importing. If empty, propose implementation structure first.
-- **Propose before implementing**: For architectural changes (especially workspace layout, shared packages, or database changes), outline the approach before proceeding.
-- **Link to existing docs**: Rather than copying documentation, link to [README.md](README.md), [apps/api/README.md](apps/api/README.md), [apps/web/README.md](apps/web/README.md), or AGENTS.md.
-- **Follow NestJS conventions**: When adding backend features, create module → service → controller. Use dependency injection.
-- **Use server components by default**: In Next.js, default to server components; add `'use client'` only when needed for interactivity.
-- **Prefer workspace commands**: Use `pnpm` at root level with `--filter` rather than navigating into individual apps.
-- **Run tests locally**: Before suggesting changes, verify with `pnpm test` and `pnpm api:test`.
-- **Maintain strict TypeScript**: Do not disable `strict` mode. All new types must be explicit.
-- **Keep changes modular and scalable**: Avoid large monolithic refactors without a clear incremental path.
-- **Document new patterns**: When introducing a new convention (e.g., error handling, logging), update AGENTS.md or linked READMEs.
-
-## Editing & PR Guidance
-
-- **Keep commits focused**: One feature or fix per commit. Use descriptive messages.
-- **Test before committing**: Run `pnpm test`, `pnpm api:test`, and `pnpm lint` locally.
-- **Update shared packages intentionally**: Before modifying `packages/*`, consider if the change belongs in a shared package or in a specific app.
-- **Coordinate database changes**: If modifying Prisma schema (future), notify that migrations must be created and tested.
-- **Document breaking changes**: If modifying shared package exports, update consumers and AGENTS.md.
-
-## For Specialized Work
-
-- **Ask for dedicated guidance** on backend development: Request "backend development guide" to focus on NestJS patterns, database integration, and API design.
-- **Ask for dedicated guidance** on frontend development: Request "frontend development guide" to focus on Next.js app directory, component patterns, and UI/UX.
-- **Ask for dedicated guidance** on database/Prisma setup: Request "database setup guide" for schema design, migrations, and multi-tenancy architecture.
 
 ---
 
-Generated to help AI agents work safely and effectively in this repository.
+This AGENTS file is intentionally tuned for API work so backend agents can identify the correct module boundaries, config patterns, database conventions, and verification steps quickly.
